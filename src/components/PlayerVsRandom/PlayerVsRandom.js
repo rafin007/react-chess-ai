@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import Chess from "chess.js";
+import classes from "./PlayerVsRandom.module.scss";
 
 import { Chessboard } from "react-chessboard";
+import { getAvailableSquares } from "../../utils/utilityFunctions";
 
 export default function PlayVsRandom({ boardWidth }) {
   const chessboardRef = useRef();
@@ -31,7 +33,30 @@ export default function PlayVsRandom({ boardWidth }) {
     });
   }
 
+  function highlightAvailableMoves(piece, sourceSquare) {
+    const availableMoves = game.moves({ square: sourceSquare });
+
+    const squares = getAvailableSquares(availableMoves);
+
+    squares.forEach((square) => {
+      square.classList.add(classes.highlight);
+    });
+  }
+
+  function unhighlightAvailableMoves(piece, sourceSquare) {
+    const availableMoves = game.moves({ square: sourceSquare });
+
+    const squares = getAvailableSquares(availableMoves);
+
+    squares.forEach((square) => {
+      square.classList.remove(classes.highlight);
+    });
+  }
+
   function onDrop(sourceSquare, targetSquare) {
+    // unhighlight the board square after a move
+    unhighlightAvailableMoves(null, sourceSquare);
+
     const gameCopy = { ...game };
     const move = gameCopy.move({
       from: sourceSquare,
@@ -41,6 +66,7 @@ export default function PlayVsRandom({ boardWidth }) {
 
     // illegal move
     if (move === null) return false;
+
     setGame(gameCopy);
 
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
@@ -60,6 +86,8 @@ export default function PlayVsRandom({ boardWidth }) {
         customArrows={arrows}
         position={game.fen()}
         onPieceDrop={onDrop}
+        onPieceDragBegin={highlightAvailableMoves}
+        onPieceDragEnd={unhighlightAvailableMoves}
         customBoardStyle={{
           borderRadius: "4px",
           boxShadow: "0 5px 15px rgba(0, 0, 0, 0.5)",
