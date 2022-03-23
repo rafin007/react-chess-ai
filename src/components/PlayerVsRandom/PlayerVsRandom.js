@@ -5,7 +5,7 @@ import classes from "./PlayerVsRandom.module.scss";
 import { Chessboard } from "react-chessboard";
 import { getAvailableSquares } from "../../utils/utilityFunctions";
 
-export default function PlayVsRandom({ boardWidth }) {
+export default function PlayerVsRandom({ boardWidth }) {
   const chessboardRef = useRef();
   const [game, setGame] = useState(new Chess());
   const [arrows, setArrows] = useState([]);
