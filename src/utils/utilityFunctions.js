@@ -29,6 +29,11 @@ export const getAvailableSquares = (game, sourceSquare) => {
     else if (square.length === 5) {
       square = square.substr(2, 2);
     }
+    // if pawn goes to the 8th row and changes into something else
+    else if (square.includes("=")) {
+      const sqrs = square.split("=");
+      square = sqrs[0].slice(-2);
+    }
     squares.push(document.querySelector(`[data-square="${square}"]`));
   }
 
