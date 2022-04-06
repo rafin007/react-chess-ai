@@ -54,7 +54,7 @@ const minimax = (game, depth, alpha, beta, isMaximisingPlayer) => {
 };
 
 // uses the minimax algorithm with alpha beta pruning to caculate the best move
-export const calculateBestMove = (game) => {
+export const calculateBestMove = (game, minimaxDepth) => {
   const possibleNextMoves = game.moves();
   let bestMove = -9999;
   let bestMoveFound;

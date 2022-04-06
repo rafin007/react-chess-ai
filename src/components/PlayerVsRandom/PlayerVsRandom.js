@@ -1,9 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Chess from "chess.js";
-import classes from "./PlayerVsRandom.module.scss";
+import classes from "../Chess.module.css";
 
 import { Chessboard } from "react-chessboard";
-import { getAvailableSquares } from "../../utils/utilityFunctions";
+import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
 
 export default function PlayerVsRandom({ boardWidth }) {
   const chessboardRef = useRef();
@@ -11,6 +11,7 @@ export default function PlayerVsRandom({ boardWidth }) {
   const [arrows, setArrows] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [currentTimeout, setCurrentTimeout] = useState(undefined);
+  const [inCheck, setInCheck] = useState({ element: null, value: false });
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -28,15 +29,21 @@ export default function PlayerVsRandom({ boardWidth }) {
       return;
 
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-    safeGameMutate((game) => {
-      game.move(possibleMoves[randomIndex]);
-    });
+
+    const gameCopy = { ...game };
+
+    // safeGameMutate((game) => {
+    //   game.move(possibleMoves[randomIndex]);
+    // });
+    gameCopy.move(possibleMoves[randomIndex]);
+
+    setGame(gameCopy);
+
+    isInCheck(game, inCheck, setInCheck);
   }
 
   function highlightAvailableMoves(piece, sourceSquare) {
-    const availableMoves = game.moves({ square: sourceSquare });
-
-    const squares = getAvailableSquares(availableMoves);
+    const squares = getAvailableSquares(game, sourceSquare);
 
     squares.forEach((square) => {
       square.classList.add(classes.highlight);
@@ -44,14 +51,23 @@ export default function PlayerVsRandom({ boardWidth }) {
   }
 
   function unhighlightAvailableMoves(piece, sourceSquare) {
-    const availableMoves = game.moves({ square: sourceSquare });
-
-    const squares = getAvailableSquares(availableMoves);
+    const squares = getAvailableSquares(game, sourceSquare);
 
     squares.forEach((square) => {
       square.classList.remove(classes.highlight);
     });
   }
+
+  // if in check change the color of the square, otherwise remove it
+  useEffect(() => {
+    if (inCheck.element !== null) {
+      if (inCheck.value) {
+        inCheck.element.classList.add(classes.inCheck);
+      } else {
+        inCheck.element.classList.remove(classes.inCheck);
+      }
+    }
+  }, [inCheck.value, inCheck.element]);
 
   function onDrop(sourceSquare, targetSquare) {
     // unhighlight the board square after a move
@@ -69,8 +85,11 @@ export default function PlayerVsRandom({ boardWidth }) {
 
     setGame(gameCopy);
 
+    // if there is a check
+    isInCheck(game, inCheck, setInCheck);
+
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
-    const newTimeout = setTimeout(makeRandomMove, 200);
+    const newTimeout = setTimeout(makeRandomMove, 1000);
     setCurrentTimeout(newTimeout);
     return true;
   }

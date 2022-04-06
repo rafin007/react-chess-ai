@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import Chess from "chess.js";
 import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
-import classes from "./PlayerVsPlayer.module.scss";
+import classes from "../Chess.module.css";
 
 import { Chessboard } from "react-chessboard";
 

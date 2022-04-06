@@ -72,7 +72,7 @@ export const isInCheck = (game, inCheck, setInCheck) => {
       `[data-square="${kingSquare}"]`
     );
 
-    setInCheck({ element: squareElement, value: true });
+    setInCheck({ ...inCheck, element: squareElement, value: true });
   } else if (!game.in_check()) {
     setInCheck({ ...inCheck, value: false });
   }

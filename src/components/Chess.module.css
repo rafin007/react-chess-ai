@@ -10,3 +10,15 @@
 
     box-shadow: 2px 2px 20px 5px #000;
 }
+
+.highlight {
+  
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 0px 0px 10px inset,
+      rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;
+  }
+
+.inCheck {
+  box-shadow: rgba(150, 31, 31, 0.9) 0px 0px 1px 6px inset,
+  rgba(0, 0, 0, 0.9) 0px 0px 0px 1px;
+}
+  
