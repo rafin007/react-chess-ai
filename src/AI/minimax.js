@@ -3,8 +3,8 @@ import { getPieceValue } from "./boardPositions";
 // the evaluation function for minimax
 const evaluateBoard = (board) => {
   let totalEvaluation = 0;
-  for (const i = 0; i < 8; i++) {
-    for (const j = 0; j < 8; j++) {
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
       totalEvaluation = totalEvaluation + getPieceValue(board[i][j], i, j);
     }
   }
@@ -19,10 +19,11 @@ const minimax = (game, depth, alpha, beta, isMaximisingPlayer) => {
 
   const possibleNextMoves = game.moves();
   const numPossibleMoves = possibleNextMoves.length;
+  let bestMove;
 
   if (isMaximisingPlayer) {
-    let bestMove = -9999;
-    for (const i = 0; i < numPossibleMoves; i++) {
+    bestMove = -9999;
+    for (let i = 0; i < numPossibleMoves; i++) {
       game.move(possibleNextMoves[i]);
       bestMove = Math.max(
         bestMove,
@@ -35,8 +36,8 @@ const minimax = (game, depth, alpha, beta, isMaximisingPlayer) => {
       }
     }
   } else {
-    let bestMove = 9999;
-    for (const i = 0; i < numPossibleMoves; i++) {
+    bestMove = 9999;
+    for (let i = 0; i < numPossibleMoves; i++) {
       game.move(possibleNextMoves[i]);
       bestMove = Math.min(
         bestMove,
@@ -59,7 +60,7 @@ export const calculateBestMove = (game, minimaxDepth) => {
   let bestMove = -9999;
   let bestMoveFound;
 
-  for (const i = 0; i < possibleNextMoves.length; i++) {
+  for (let i = 0; i < possibleNextMoves.length; i++) {
     const possibleNextMove = possibleNextMoves[i];
     game.move(possibleNextMove);
     const value = minimax(game, minimaxDepth, -10000, 10000, false);

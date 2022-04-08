@@ -4,8 +4,9 @@ import classes from "../Chess.module.css";
 
 import { Chessboard } from "react-chessboard";
 import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
+import { calculateBestMove } from "../../AI/minimax";
 
-export default function PlayerVsRandom({ boardWidth }) {
+export default function PlayerVsAI({ boardWidth }) {
   const chessboardRef = useRef();
   const [game, setGame] = useState(new Chess());
   const [arrows, setArrows] = useState([]);
@@ -41,6 +42,20 @@ export default function PlayerVsRandom({ boardWidth }) {
 
     isInCheck(game, inCheck, setInCheck);
   }
+
+  const makeAiMove = () => {
+    const bestMove = calculateBestMove(game, 3);
+
+    if (game.game_over() || game.in_draw()) return;
+
+    const gameCopy = { ...game };
+
+    gameCopy.move(bestMove);
+
+    setGame(gameCopy);
+
+    isInCheck(game, inCheck, setInCheck);
+  };
 
   function highlightAvailableMoves(piece, sourceSquare) {
     const squares = getAvailableSquares(game, sourceSquare);
@@ -89,7 +104,7 @@ export default function PlayerVsRandom({ boardWidth }) {
     isInCheck(game, inCheck, setInCheck);
 
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
-    const newTimeout = setTimeout(makeRandomMove, 1000);
+    const newTimeout = setTimeout(makeAiMove, 100);
     setCurrentTimeout(newTimeout);
     return true;
   }
@@ -113,7 +128,7 @@ export default function PlayerVsRandom({ boardWidth }) {
         }}
         ref={chessboardRef}
       />
-      {/* <button
+      <button
         className="rc-button"
         onClick={() => {
           safeGameMutate((game) => {
@@ -157,7 +172,7 @@ export default function PlayerVsRandom({ boardWidth }) {
         }}
       >
         Set Custom Arrows
-      </button> */}
+      </button>
     </>
     // </div>
   );

@@ -7,6 +7,8 @@ import {
   blackKingEval,
   blackPawnEval,
   blackRookEval,
+  knightEval,
+  evalQueen,
 } from "./pieceEvaluations";
 
 const getAbsoluteValue = (piece, isWhite, x, y) => {
