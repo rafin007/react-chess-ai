@@ -5,7 +5,7 @@ import PlayerVsAI from "../PlayerVsAI/PlayerVsAI";
 import classes from "../Chess.module.css";
 
 const Chess = () => {
-  const [boardSize, setBoardSize] = useState(undefined);
+  const [boardSize, setBoardSize] = useState(560);
 
   useEffect(() => {
     const handleResize = () => {
@@ -14,6 +14,7 @@ const Chess = () => {
     };
 
     window.addEventListener("resize", handleResize);
+    handleResize();
 
     return () => {
       // window.removeEventListener("resize");

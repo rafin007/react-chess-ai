@@ -22,6 +22,13 @@ export default function PlayerVsAI({ boardWidth }) {
     });
   }
 
+  useEffect(() => {
+    if (game.in_checkmate()) {
+      if (game.turn() === "w") console.log("you have been checkmated!");
+      else console.log("you win!");
+    }
+  }, [game]);
+
   function makeRandomMove() {
     const possibleMoves = game.moves();
 
@@ -40,13 +47,15 @@ export default function PlayerVsAI({ boardWidth }) {
 
     setGame(gameCopy);
 
-    isInCheck(game, inCheck, setInCheck);
+    isInCheck(gameCopy, inCheck, setInCheck, classes);
   }
 
   const makeAiMove = () => {
     const bestMove = calculateBestMove(game, 3);
 
-    if (game.game_over() || game.in_draw()) return;
+    if (game.game_over() || game.in_draw()) {
+      return;
+    }
 
     const gameCopy = { ...game };
 
@@ -54,7 +63,7 @@ export default function PlayerVsAI({ boardWidth }) {
 
     setGame(gameCopy);
 
-    isInCheck(game, inCheck, setInCheck);
+    isInCheck(gameCopy, inCheck, setInCheck, classes);
   };
 
   function highlightAvailableMoves(piece, sourceSquare) {
@@ -82,7 +91,7 @@ export default function PlayerVsAI({ boardWidth }) {
         inCheck.element.classList.remove(classes.inCheck);
       }
     }
-  }, [inCheck.value, inCheck.element]);
+  }, [inCheck.value]);
 
   function onDrop(sourceSquare, targetSquare) {
     // unhighlight the board square after a move
@@ -99,12 +108,11 @@ export default function PlayerVsAI({ boardWidth }) {
     if (move === null) return false;
 
     setGame(gameCopy);
-
     // if there is a check
-    isInCheck(game, inCheck, setInCheck);
+    isInCheck(game, inCheck, setInCheck, classes);
 
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
-    const newTimeout = setTimeout(makeAiMove, 100);
+    const newTimeout = setTimeout(makeRandomMove, 100);
     setCurrentTimeout(newTimeout);
     return true;
   }
@@ -113,7 +121,7 @@ export default function PlayerVsAI({ boardWidth }) {
     // <div className="" >
     <>
       <Chessboard
-        id="PlayVsRandom"
+        id="PlayerVsAI"
         animationDuration={200}
         boardOrientation={boardOrientation}
         boardWidth={boardWidth}
@@ -122,10 +130,10 @@ export default function PlayerVsAI({ boardWidth }) {
         onPieceDrop={onDrop}
         onPieceDragBegin={highlightAvailableMoves}
         onPieceDragEnd={unhighlightAvailableMoves}
-        customBoardStyle={{
-          borderRadius: "4px",
-          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.5)",
-        }}
+        // customBoardStyle={{
+        //   borderRadius: "4px",
+        //   boxShadow: "0 5px 15px rgba(0, 0, 0, 0.5)",
+        // }}
         ref={chessboardRef}
       />
       <button

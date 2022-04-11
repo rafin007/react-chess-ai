@@ -34,6 +34,10 @@ export const getAvailableSquares = (game, sourceSquare) => {
       const sqrs = square.split("=");
       square = sqrs[0].slice(-2);
     }
+    // if checkmate
+    else if (square.endsWith("#")) {
+      square = square.slice(-3).substring(0, 2);
+    }
     squares.push(document.querySelector(`[data-square="${square}"]`));
   }
 
@@ -58,22 +62,35 @@ const getPiecePositions = (game, piece) => {
 };
 
 // if the king is in check then color that square
-export const isInCheck = (game, inCheck, setInCheck) => {
+export const isInCheck = (game, inCheck, setInCheck, classes) => {
+  const blackKing = { type: "k", color: "b" };
+  const whiteKing = { type: "k", color: "w" };
+
+  const kingSquareWhite = getPiecePositions(game, whiteKing)[0];
+  const kingSquareBlack = getPiecePositions(game, blackKing)[0];
+
+  const squareElementWhiteKing = document.querySelector(
+    `[data-square="${kingSquareWhite}"]`
+  );
+  const squareElementBlackKing = document.querySelector(
+    `[data-square="${kingSquareBlack}"]`
+  );
+
+  const turn = game.turn();
+
   if (game.in_check()) {
-    let king;
-    if (game.turn() === "b") {
-      king = { type: "k", color: "b" };
-    } else {
-      king = { type: "k", color: "w" };
-    }
-    const kingSquare = getPiecePositions(game, king)[0];
-
-    const squareElement = document.querySelector(
-      `[data-square="${kingSquare}"]`
-    );
-
-    setInCheck({ ...inCheck, element: squareElement, value: true });
+    setInCheck({
+      ...inCheck,
+      element: turn === "b" ? squareElementBlackKing : squareElementWhiteKing,
+      value: true,
+    });
   } else if (!game.in_check()) {
-    setInCheck({ ...inCheck, value: false });
+    const prevCheckSquare = document.querySelector(`.${classes.inCheck}`);
+
+    setInCheck({
+      ...inCheck,
+      element: prevCheckSquare,
+      value: false,
+    });
   }
 };
