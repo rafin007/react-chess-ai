@@ -1,0 +1,13 @@
+.appbar {
+    background-color: #B58863 !important;
+}
+
+.dialogBody {
+    background-color: #F0D9B5;
+    height: 100%;
+    padding: 0 15% !important;
+}
+
+.listItem {
+    height: 13%;
+}
