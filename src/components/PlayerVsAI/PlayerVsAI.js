@@ -1,14 +1,15 @@
-import { useRef, useState, useEffect } from "react";
-import Chess from "chess.js";
+import { useState, useEffect, useContext } from "react";
 import classes from "../Chess.module.css";
 
 import { Chessboard } from "react-chessboard";
 import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
 import { calculateBestMove } from "../../AI/minimax";
+import { ChessboardRefContext, GameContext } from "../../Contexts/GameContext";
 
 export default function PlayerVsAI({ boardWidth }) {
-  const chessboardRef = useRef();
-  const [game, setGame] = useState(new Chess());
+  const chessboardRef = useContext(ChessboardRefContext);
+  // const [game, setGame] = useState(new Chess());
+  const { game, setGame } = useContext(GameContext);
   const [arrows, setArrows] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [currentTimeout, setCurrentTimeout] = useState(undefined);
@@ -38,16 +39,16 @@ export default function PlayerVsAI({ boardWidth }) {
 
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
-    const gameCopy = { ...game };
+    // const gameCopy = { ...game };
 
-    // safeGameMutate((game) => {
-    //   game.move(possibleMoves[randomIndex]);
-    // });
-    gameCopy.move(possibleMoves[randomIndex]);
+    safeGameMutate((game) => {
+      game.move(possibleMoves[randomIndex]);
+    });
+    // gameCopy.move(possibleMoves[randomIndex]);
 
-    setGame(gameCopy);
+    // setGame(gameCopy);
 
-    isInCheck(gameCopy, inCheck, setInCheck, classes);
+    isInCheck(game, inCheck, setInCheck, classes);
   }
 
   const makeAiMove = () => {
@@ -101,7 +102,7 @@ export default function PlayerVsAI({ boardWidth }) {
     const move = gameCopy.move({
       from: sourceSquare,
       to: targetSquare,
-      promotion: "q", // always promote to a queen for example simplicity
+      promotion: "q",
     });
 
     // illegal move
@@ -112,76 +113,23 @@ export default function PlayerVsAI({ boardWidth }) {
     isInCheck(game, inCheck, setInCheck, classes);
 
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
-    const newTimeout = setTimeout(makeRandomMove, 100);
+    const newTimeout = setTimeout(makeAiMove, 100);
     setCurrentTimeout(newTimeout);
     return true;
   }
 
   return (
-    // <div className="" >
-    <>
-      <Chessboard
-        id="PlayerVsAI"
-        animationDuration={200}
-        boardOrientation={boardOrientation}
-        boardWidth={boardWidth}
-        customArrows={arrows}
-        position={game.fen()}
-        onPieceDrop={onDrop}
-        onPieceDragBegin={highlightAvailableMoves}
-        onPieceDragEnd={unhighlightAvailableMoves}
-        // customBoardStyle={{
-        //   borderRadius: "4px",
-        //   boxShadow: "0 5px 15px rgba(0, 0, 0, 0.5)",
-        // }}
-        ref={chessboardRef}
-      />
-      <button
-        className="rc-button"
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.reset();
-          });
-          // stop any current timeouts
-          clearTimeout(currentTimeout);
-        }}
-      >
-        reset
-      </button>
-      <button
-        className="rc-button"
-        onClick={() => {
-          setBoardOrientation((currentOrientation) =>
-            currentOrientation === "white" ? "black" : "white"
-          );
-        }}
-      >
-        flip board
-      </button>
-      <button
-        className="rc-button"
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.undo();
-          });
-          // stop any current timeouts
-          clearTimeout(currentTimeout);
-        }}
-      >
-        undo
-      </button>
-      <button
-        className="rc-button"
-        onClick={() => {
-          setArrows([
-            ["a3", "a5"],
-            ["g1", "f3"],
-          ]);
-        }}
-      >
-        Set Custom Arrows
-      </button>
-    </>
-    // </div>
+    <Chessboard
+      id="PlayerVsAI"
+      animationDuration={200}
+      boardOrientation={boardOrientation}
+      boardWidth={boardWidth}
+      customArrows={arrows}
+      position={game.fen()}
+      onPieceDrop={onDrop}
+      onPieceDragBegin={highlightAvailableMoves}
+      onPieceDragEnd={unhighlightAvailableMoves}
+      ref={chessboardRef}
+    />
   );
 }

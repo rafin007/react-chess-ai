@@ -1,13 +1,14 @@
-import { useRef, useState, useEffect } from "react";
-import Chess from "chess.js";
+import { useState, useEffect, useContext } from "react";
 import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
 import classes from "../Chess.module.css";
 
 import { Chessboard } from "react-chessboard";
+import { ChessboardRefContext, GameContext } from "../../Contexts/GameContext";
 
 export default function PlayerVsPlayer({ boardWidth }) {
-  const chessboardRef = useRef();
-  const [game, setGame] = useState(new Chess());
+  const chessboardRef = useContext(ChessboardRefContext);
+
+  const { game, setGame } = useContext(GameContext);
   const [inCheck, setInCheck] = useState({ element: null, value: false });
 
   function safeGameMutate(modify) {
@@ -58,49 +59,21 @@ export default function PlayerVsPlayer({ boardWidth }) {
     setGame(gameCopy);
 
     // if there is a check
-    isInCheck(game, inCheck, setInCheck);
+    isInCheck(game, inCheck, setInCheck, classes);
 
     return move;
   }
 
   return (
-    <>
-      <Chessboard
-        id="PlayVsPlay"
-        animationDuration={200}
-        boardWidth={boardWidth}
-        position={game.fen()}
-        onPieceDragBegin={highlightAvailableMoves}
-        onPieceDragEnd={unhighlightAvailableMoves}
-        onPieceDrop={onDrop}
-        customBoardStyle={{
-          borderRadius: "4px",
-          boxShadow: "0 5px 15px rgba(0, 0, 0, 0.5)",
-        }}
-        ref={chessboardRef}
-      />
-      {/* <button
-        className="rc-button"
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.reset();
-          });
-          chessboardRef.current.clearPremoves();
-        }}
-      >
-        reset
-      </button>
-      <button
-        className="rc-button"
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.undo();
-          });
-          chessboardRef.current.clearPremoves();
-        }}
-      >
-        undo
-      </button> */}
-    </>
+    <Chessboard
+      id="PlayerVsPlayer"
+      animationDuration={200}
+      boardWidth={boardWidth}
+      position={game.fen()}
+      onPieceDragBegin={highlightAvailableMoves}
+      onPieceDragEnd={unhighlightAvailableMoves}
+      onPieceDrop={onDrop}
+      ref={chessboardRef}
+    />
   );
 }

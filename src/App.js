@@ -1,11 +1,13 @@
-import Chess from "./components/Chess/Chess";
+import Layout from "./components/Layout/Layout";
 import "./App.css";
+import ContextLayers from "./components/ContextLayers/ContextLayers";
 
 function App() {
   return (
     <div className="App">
-      <div></div>
-      <Chess />
+      <ContextLayers>
+        <Layout />
+      </ContextLayers>
     </div>
   );
 }

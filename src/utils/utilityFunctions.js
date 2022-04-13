@@ -6,7 +6,7 @@ export const getAvailableSquares = (game, sourceSquare) => {
     // skip king or queen side castling
     if (square === "O-O" || square === "O-O-O") {
       continue;
-    } else if (square.length === 3) {
+    } else if (square.length === 3 && !square.endsWith("#")) {
       // if a pawn gives check without capturing a piece
       if (square.endsWith("+")) {
         square = square.substr(0, 2);
@@ -15,7 +15,11 @@ export const getAvailableSquares = (game, sourceSquare) => {
       else {
         square = square.substr(1);
       }
-    } else if (square.length === 4) {
+    } else if (
+      square.length === 4 &&
+      !square.endsWith("#") &&
+      !square.includes("=")
+    ) {
       // if a piece other than pawn gives check without capturing a piece
       if (square.endsWith("+")) {
         square = square.substr(1, 2);
@@ -26,13 +30,17 @@ export const getAvailableSquares = (game, sourceSquare) => {
       }
     }
     // if a piece can give a check by capturing another piece
-    else if (square.length === 5) {
+    else if (
+      square.length === 5 &&
+      !square.endsWith("#") &&
+      !square.includes("=")
+    ) {
       square = square.substr(2, 2);
     }
     // if pawn goes to the 8th row and changes into something else
     else if (square.includes("=")) {
-      const sqrs = square.split("=");
-      square = sqrs[0].slice(-2);
+      // console.log(square);
+      square = square.split("=")[0].slice(-2);
     }
     // if checkmate
     else if (square.endsWith("#")) {
