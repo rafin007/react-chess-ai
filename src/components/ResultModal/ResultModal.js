@@ -7,11 +7,11 @@ import Typography from "@mui/material/Typography";
 import { ModalContext } from "../../Contexts/GameContext";
 
 const style = {
-  position: "absolute",
+  position: "relative",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 300,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -26,30 +26,27 @@ export default function ResultModal() {
   const handleClose = () => setOpenModal({ ...openModal, value: false });
 
   return (
-    <div>
-      {/* <Button onClick={handleOpen}>Open modal</Button> */}
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={openModal.value}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={openModal.value}>
-          <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              Game Over!
-            </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              {openModal.message}
-            </Typography>
-          </Box>
-        </Fade>
-      </Modal>
-    </div>
+    <Modal
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      open={openModal.value}
+      onClose={handleClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={openModal.value}>
+        <Box sx={style}>
+          <Typography id="transition-modal-title" variant="h6" component="h2">
+            Game Over!
+          </Typography>
+          <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+            {openModal.message}
+          </Typography>
+        </Box>
+      </Fade>
+    </Modal>
   );
 }
