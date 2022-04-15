@@ -13,25 +13,32 @@ import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import classes from "./Dialog.module.css";
 import Dropdown from "../Dropdown/Dropdown";
-import { DifficultyContext, OpponentContext } from "../../Contexts/GameContext";
+import {
+  DifficultyContext,
+  MenuContext,
+  OpponentContext,
+} from "../../Contexts/GameContext";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function FullScreenDialog() {
-  const [open, setOpen] = useState(true);
+  // const [open, setOpen] = useState(true);
+  const { openMenu, setOpenMenu } = useContext(MenuContext);
 
   const { opponent, setOpponent } = useContext(OpponentContext);
   const { difficulty, setDifficulty } = useContext(DifficultyContext);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenMenu(true);
   };
 
   const handleClose = () => {
-    if (opponent === "" || difficulty === "") return;
-    setOpen(false);
+    if (opponent === "AI" && difficulty === "") {
+      return;
+    } else if (opponent === "") return false;
+    setOpenMenu(false);
   };
 
   return (
@@ -41,7 +48,7 @@ export default function FullScreenDialog() {
       </Button> */}
       <Dialog
         fullScreen
-        open={open}
+        open={openMenu}
         onClose={handleClose}
         TransitionComponent={Transition}
       >

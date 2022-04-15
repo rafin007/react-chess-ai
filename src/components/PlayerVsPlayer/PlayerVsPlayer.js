@@ -3,13 +3,18 @@ import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
 import classes from "../Chess.module.css";
 
 import { Chessboard } from "react-chessboard";
-import { ChessboardRefContext, GameContext } from "../../Contexts/GameContext";
+import {
+  ChessboardRefContext,
+  GameContext,
+  ModalContext,
+} from "../../Contexts/GameContext";
 
 export default function PlayerVsPlayer({ boardWidth }) {
   const chessboardRef = useContext(ChessboardRefContext);
 
   const { game, setGame } = useContext(GameContext);
   const [inCheck, setInCheck] = useState({ element: null, value: false });
+  const { openModal, setOpenModal } = useContext(ModalContext);
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -18,6 +23,24 @@ export default function PlayerVsPlayer({ boardWidth }) {
       return update;
     });
   }
+
+  useEffect(() => {
+    if (game.in_checkmate()) {
+      if (game.turn() === "w") {
+        setOpenModal({
+          ...openModal,
+          message: "Black won!",
+          value: true,
+        });
+      } else {
+        setOpenModal({
+          ...openModal,
+          message: "White won!",
+          value: true,
+        });
+      }
+    }
+  }, [game]);
 
   function highlightAvailableMoves(piece, sourceSquare) {
     const squares = getAvailableSquares(game, sourceSquare);

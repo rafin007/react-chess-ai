@@ -4,16 +4,22 @@ import classes from "../Chess.module.css";
 import { Chessboard } from "react-chessboard";
 import { getAvailableSquares, isInCheck } from "../../utils/utilityFunctions";
 import { calculateBestMove } from "../../AI/minimax";
-import { ChessboardRefContext, GameContext } from "../../Contexts/GameContext";
+import {
+  ChessboardRefContext,
+  DifficultyContext,
+  GameContext,
+  ModalContext,
+} from "../../Contexts/GameContext";
 
 export default function PlayerVsAI({ boardWidth }) {
   const chessboardRef = useContext(ChessboardRefContext);
-  // const [game, setGame] = useState(new Chess());
   const { game, setGame } = useContext(GameContext);
+  const { difficulty, setDifficulty } = useContext(DifficultyContext);
   const [arrows, setArrows] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [currentTimeout, setCurrentTimeout] = useState(undefined);
   const [inCheck, setInCheck] = useState({ element: null, value: false });
+  const { openModal, setOpenModal } = useContext(ModalContext);
 
   function safeGameMutate(modify) {
     setGame((g) => {
@@ -25,8 +31,19 @@ export default function PlayerVsAI({ boardWidth }) {
 
   useEffect(() => {
     if (game.in_checkmate()) {
-      if (game.turn() === "w") console.log("you have been checkmated!");
-      else console.log("you win!");
+      if (game.turn() === "w") {
+        setOpenModal({
+          ...openModal,
+          message: "You have been checkmated!",
+          value: true,
+        });
+      } else {
+        setOpenModal({
+          ...openModal,
+          message: "Congrats! You won!",
+          value: true,
+        });
+      }
     }
   }, [game]);
 
@@ -39,20 +56,15 @@ export default function PlayerVsAI({ boardWidth }) {
 
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
-    // const gameCopy = { ...game };
-
     safeGameMutate((game) => {
       game.move(possibleMoves[randomIndex]);
     });
-    // gameCopy.move(possibleMoves[randomIndex]);
-
-    // setGame(gameCopy);
 
     isInCheck(game, inCheck, setInCheck, classes);
   }
 
   const makeAiMove = () => {
-    const bestMove = calculateBestMove(game, 3);
+    const bestMove = calculateBestMove(game, difficulty);
 
     if (game.game_over() || game.in_draw()) {
       return;

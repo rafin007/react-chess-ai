@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,6 +12,10 @@ export default function Dropdown({ label }) {
 
   const handleOpponentChange = (event) => {
     setOpponent(event.target.value);
+
+    if (event.target.value === "Human") {
+      setDifficulty("");
+    }
   };
 
   const handleDifficultyChange = (event) => {
@@ -41,6 +45,7 @@ export default function Dropdown({ label }) {
         value={difficulty}
         label="Difficulty"
         onChange={handleDifficultyChange}
+        disabled={opponent === "Human"}
       >
         <MenuItem value={1}>Easy</MenuItem>
         <MenuItem value={2}>Medium</MenuItem>
