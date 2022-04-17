@@ -46,6 +46,12 @@ export const getAvailableSquares = (game, sourceSquare) => {
     else if (square.endsWith("#")) {
       square = square.slice(-3).substring(0, 2);
     }
+
+    // for some reason if the square is not found then skip it
+    if (!document.querySelector(`[data-square="${square}"]`)) {
+      continue;
+    }
+
     squares.push(document.querySelector(`[data-square="${square}"]`));
   }
 
