@@ -1,7 +1,7 @@
 # A Chess AI powered by minimax algorithm and alpha-beta pruning (v 1.0)
 
 ## How to run
-- Clone the repository using `https://github.com/rafin007/react-chess-ai.git`
+- Clone the repository using `git clone https://github.com/rafin007/react-chess-ai.git`
 - Go to the root directory
 - Install the necessary dependencies using `npm install`
 - Run the project using `npm start`
