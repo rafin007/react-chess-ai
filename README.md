@@ -6,6 +6,9 @@
 - Install the necessary dependencies using `npm install`
 - Run the project using `npm start`
 
+## Live Demo
+Checkout the live demo of this app here -> https://react-chess-ai.netlify.app/
+
 ## Contact
 If there are any issues or questions regarding this project, please reach out to me at arefinm@lakeheadu.ca
 
